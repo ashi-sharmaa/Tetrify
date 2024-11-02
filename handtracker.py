@@ -7,6 +7,33 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
 
+# Gets the average position
+def palmAvg(points):
+  avg_x = 0.0
+  avg_y = 0.0
+  for point in points:
+    avg_x += point[0]
+    avg_y += point[1]
+  
+  avg_x /= len(points)
+  avg_y /= len(points)
+  
+  print('average x coord: ' + str(avg_x) + ' --- average y coord: ' + str(avg_y))
+
+def avgPalmPos(palms):
+  avg_x = 0.0
+  avg_y = 0.0
+  for point in palms:
+    avg_x += point[0]
+    avg_y += point[1]
+  
+  avg_x /= len(palms)
+  avg_y /= len(palms)
+  
+  print('average x coord: ' + str(avg_x) + ' --- average y coord: ' + str(avg_y))
+
+
+
 cap = cv2.VideoCapture(0)
 hands=mp_hands.Hands()
 print_once = 1 == 1
@@ -39,17 +66,7 @@ while cap.isOpened():
               landmark_index = landmark_index + 1
         print(palm_coordinates)
         
-        avg_x = 0.0
-        avg_y = 0.0
-        for point in palm_coordinates:
-          avg_x += point[0]
-          avg_y += point[1]
-        
-        avg_x /= len(palm_coordinates)
-        avg_y /= len(palm_coordinates)
-        
-      print('average x coord: ' + avg_x + ' --- average y coord: ' + avg_y)
-                 
+        palmAvg(palm_coordinates)                 
 
 
       # for index in palm_indexes:
@@ -68,3 +85,4 @@ while cap.isOpened():
 
 cap.release()
 cv2.destroyAllWindows()
+
