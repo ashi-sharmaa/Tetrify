@@ -918,7 +918,7 @@ def gameLoop():
                   key.rotate.status = 'pressed'
                   print('Top')
                   currentDirection = Direction.UP
-            elif curPos[1] > cBottom and currentDirection != Direction.DOWN: 
+            elif curPos[1] > cBottom: 
                 key.down.status = 'pressed'
                 print('Bottom')
                 currentDirection = Direction.DOWN
@@ -932,15 +932,14 @@ def gameLoop():
                 currentDirection = Direction.RIGHT
             elif not(curPos[1] < cTop or curPos[1] > cBottom or curPos[0] < cLeft or curPos[0] > cRight):
             #no direction condition is passed
-                key.down.status = 'pressed'
                 currentDirection = Direction.NEUTRAL
                 key.rotate.status = 'idle'
-                key.down.status = 'released'
+                key.down.status = 'idle'
                 xChange = 0
             else:
-                key.down.status = 'pressed'
                 key.rotate.status = 'idle'
-                key.down.status = 'released'
+                key.down.status = 'idle'
+
             
             if xChange > 0:
                 key.xNav.status = 'right'
