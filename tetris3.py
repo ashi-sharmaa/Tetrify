@@ -133,18 +133,6 @@ baseLinePoints = (0,40,100,300,1200)
 #Total score is calculated as: Score = level*baseLinePoints[clearedLineNumberAtATime] + totalDropCount
 #Drop means the action the player forces the piece down instead of free fall(By key combinations: down, down-left, down-rigth arrows)
 
-class CVController:
-    def __init___(self):
-    
-    # Gives 5 seconds to get in position, scans for 5 seconds, and takes the average
-    def calibrate():
-        
-    # Sets movement
-    def calculateMovement():
-        
-    
-        
-
 #Class for the game input keys and their status
 class GameKeyInput:
 	
