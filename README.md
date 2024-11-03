@@ -7,3 +7,8 @@ keyboard inputs.
 Original Tetris code forked from ibrahimAtespare. Check it out here: https://github.com/ibrahimAtespare/tetris-python
 
 Made for HackTX 2024.
+
+## Directions for use
+`pip install opencv-python mediapipe pygame`
+
+`python3 tetris2.py`
