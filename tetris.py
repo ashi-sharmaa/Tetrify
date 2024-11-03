@@ -22,7 +22,7 @@ Direction = Enum('Direction', [('UP', 1), ('DOWN', 2), ('LEFT', 3), ('RIGHT', 4)
 def avg2tuple(points) -> tuple:
   avg_x = 0.0
   avg_y = 0.0
-  for point in points:
+  for pointx in points:
     avg_x += point[0]
     avg_y += point[1]
   
@@ -141,7 +141,7 @@ while time_ms > -1:
     cv2.waitKey(1)
 
 
-
+# Start grandfathered code:
 pygame.init()
 pygame.font.init()
 
