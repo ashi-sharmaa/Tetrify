@@ -30,6 +30,7 @@ timems = 0
 palms = []
 cap = cv2.VideoCapture(0)
 hands=mp_hands.Hands()
+hands.max_num_hands = 1
 print_once = 1 == 1
 
 rTop = 0.25

@@ -38,16 +38,12 @@ def avg2tuple(points: list[tuple[float, 2]]) -> tuple[float, 2]:
     # print('average x coord: ' + str(avg_x) + ' --- average y coord: ' + str(avg_y))
     return (avg_x, avg_y)
 
-
+#start calibration function
+#def calibrate():
+    
 palms = []
 cap = cv2.VideoCapture(0)
-hands = mp_hands.Hands()
-print_once = 1 == 1
-
-rTop = 0.25
-rBottom = 0.25
-rRight = 0.15
-rLeft = 0.15
+hands = mp_hands.Hands(max_num_hands=1)
 
 cTop = 0
 cBottom = 0
@@ -58,78 +54,76 @@ center = [2]
 curPos = [2]
 
 currentDirection = Direction.NEUTRAL
-start_time = time.time()
-time_ms = 0.0
-while time_ms < 5000.0:
-    time_ms += time.time() - start_time
 
-    if time_ms > 1000.0 and time_ms < 5000.0:
-        success, image = cap.read()
-        image = cv2.cvtColor(cv2.flip(image, 1), cv2.COLOR_BGR2RGB)
-        # To improve performance, optionally mark the image as not writeable to
-        # pass by reference.
-        results = hands.process(image)
-        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+def calibrate():
+    
+    global cTop
+    global cBottom
+    global cLeft
+    global cRight
+    
+    print_once = 1 == 1
 
-        if results.multi_hand_landmarks:
-            # prints to terminal coordinates
-            # 0, 1, 5, 9, 13, 17
-            print("Getting avgs")
-            palm_indexes = [0, 1, 5, 9, 13, 17]
-            palm_coordinates = []
-            for hand_landmarks in results.multi_hand_landmarks:
-                # Here is getting coordinates
-                landmark_index = 0
-                arr_index = 0
-                for ids, landmrk in enumerate(hand_landmarks.landmark):
-                    if landmark_index in palm_indexes:
-                        # add to the list of relevant coordinates
-                        palm_coordinates.append([landmrk.x, landmrk.y])
-                        arr_index = arr_index + 1
-                    landmark_index = landmark_index + 1
-            print(palm_coordinates)
+    rTop = 0.2
+    rBottom = 0.2
+    rRight = 0.1
+    rLeft = 0.1
 
-            palms.append(avg2tuple(palm_coordinates))
+    start_time = time.time()
+    time_ms = 0.0
+    while time_ms < 5000.0:
+        time_ms += time.time() - start_time
 
-            for hand_landmarks in results.multi_hand_landmarks:
-                mp_drawing.draw_landmarks(image, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+        if time_ms > 1000.0 and time_ms < 5000.0:
+            success, image = cap.read()
+            image = cv2.cvtColor(cv2.flip(image, 1), cv2.COLOR_BGR2RGB)
+            # To improve performance, optionally mark the image as not writeable to
+            # pass by reference.
+            results = hands.process(image)
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
-        if time_ms > 4500.0 and time_ms < 5500.0:
-            print("output pos")
-            center = avg2tuple(palms)
-            print(center)
-            cTop = center[1] - rTop
-            cBottom = center[1] + rBottom
-            cRight = center[0] + rRight
-            cLeft = center[0] - rLeft
-        cv2.imshow("MediaPipe Hands", image)
-        cv2.waitKey(1)
+            if results.multi_hand_landmarks:
+                # prints to terminal coordinates
+                # 0, 1, 5, 9, 13, 17
+                print("Getting avgs")
+                palm_indexes = [0, 1, 5, 9, 13, 17]
+                palm_coordinates = []
+                for hand_landmarks in results.multi_hand_landmarks:
+                    # Here is getting coordinates
+                    landmark_index = 0
+                    arr_index = 0
+                    for ids, landmrk in enumerate(hand_landmarks.landmark):
+                        if landmark_index in palm_indexes:
+                            # add to the list of relevant coordinates
+                            palm_coordinates.append([landmrk.x, landmrk.y])
+                            arr_index = arr_index + 1
+                        landmark_index = landmark_index + 1
+                print(palm_coordinates)
+
+                palms.append(avg2tuple(palm_coordinates))
+
+                for hand_landmarks in results.multi_hand_landmarks:
+                    mp_drawing.draw_landmarks(image, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+
+            if time_ms > 4500.0 and time_ms < 5500.0:
+                print("output pos")
+                center = avg2tuple(palms)
+                print(center)
+                cTop = center[1] - rTop
+                cBottom = center[1] + rBottom
+                cRight = center[0] + rRight
+                cLeft = center[0] - rLeft
+            cv2.imshow("MediaPipe Hands", image)
+            cv2.waitKey(1)
 
 
-print("Output pos: ")
-print(cTop, cBottom, cRight, cLeft)
-
-if time_ms >= 5500:
-    palm_indexes = [0, 1, 5, 9, 13, 17]
-    palm_coordinates = []
-    for hand_landmarks in results.multi_hand_landmarks:
-        # Here is getting coordinates
-        landmark_index = 0
-        arr_index = 0
-        for ids, landmrk in enumerate(hand_landmarks.landmark):
-            if landmark_index in palm_indexes:
-                # add to the list of relevant coordinates
-                palm_coordinates.append([landmrk.x, landmrk.y])
-                arr_index = arr_index + 1
-            landmark_index = landmark_index + 1
-    # print(palm_coordinates)
-
-    curPos = avg2tuple(palm_coordinates)
+    print("Output pos: ")
+    print(cTop, cBottom, cRight, cLeft)
 
 pygame.init()
 pygame.font.init()
 
-DISPLAY_WIDTH = 800
+DISPLAY_WIDTH = 600
 DISPLAY_HEIGHT = 600
 
 gameDisplay = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
@@ -204,35 +198,35 @@ directions = {
 }
 
 levelSpeeds = (
-    48,
-    43,
-    38,
-    33,
-    28,
-    23,
-    18,
-    13,
-    8,
-    6,
-    5,
-    5,
-    5,
-    4,
-    4,
-    4,
-    3,
-    3,
-    3,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
-    2,
+    48 / 2,
+    43 / 2,
+    38 / 2,
+    33 / 2,
+    28 / 2,
+    23 / 2,
+    18 / 2,
+    13 / 2,
+    8 / 2,
+    6 / 2,
+    5 / 2,
+    5 / 2,
+    5 / 2,
+    4 / 2,
+    4 / 2,
+    4 / 2,
+    3 / 2,
+    3 / 2,
+    3 / 2,
+    2 / 2,
+    2 / 2,
+    2 / 2,
+    2 / 2,
+    2 / 2,
+    2 / 2,
+    2 / 2,
+    2 / 2,
+    2 / 2,
+    2 / 2,
 )
 # The speed of the moving piece at each level. Level speeds are defined as levelSpeeds[level]
 # Each 10 cleared lines means a level up.
@@ -446,7 +440,7 @@ class MainBoard:
             text2 = fontSB.render('to', False, self.whiteSineAnimation())
             gameDisplay.blit(text2,(xPosRef+self.blockSize,self.yPos+(yBlockRef+3)*self.blockSize))
             if self.gameStatus == 'firstStart':
-                text3 = fontSB.render('start', False, self.whiteSineAnimation())
+                text3 = fontSB.render('calibrate', False, self.whiteSineAnimation())
                 gameDisplay.blit(text3,(xPosRef+self.blockSize,self.yPos+(yBlockRef+4.5)*self.blockSize))
             else:
                 text3 = fontSB.render('restart', False, self.whiteSineAnimation())
@@ -581,9 +575,12 @@ class MainBoard:
     
     # All the game events and mechanics are placed in this function, called at each game loop iteration
     def gameAction(self):
-        
-        if self.gameStatus == 'firstStart':
+        if self.gameStatus == 'calibration phase':
+            calibrate()
+            self.gameStatus = 'firstStart'
+        elif self.gameStatus == 'firstStart':
             if key.enter.status == 'pressed':
+                calibrate()
                 self.restart()
         
         elif self.gameStatus == 'running':
@@ -633,6 +630,7 @@ class MainBoard:
         
         else: # 'gameOver'
             if key.enter.status == 'pressed':
+                calibrate()
                 self.restart()
 
 class MovingPiece:
@@ -939,6 +937,8 @@ def gameLoop():
             else:
                 key.rotate.status = 'idle'
                 key.down.status = 'idle'
+            
+            print(str(cTop) + ' ' + str(cBottom) + ' ' + str(cLeft) + ' ' + str(cRight))
 
             
             if xChange > 0:
@@ -1001,7 +1001,7 @@ def gameLoop():
         mainBoard.gameAction() #Apply all the game actions here	
         mainBoard.draw() #Draw the new board after game the new game actions
         gameClock.update() #Increment the frame tick
-        print('gameClock updated')
+        #print('gameClock updated')
         cv2.imshow("MediaPipe Hands", image)
         pygame.display.update() #Pygame display update		
         clock.tick(60) #Pygame clock tick function(60 fps)
