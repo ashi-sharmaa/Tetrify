@@ -118,7 +118,7 @@ while timems > -1:
         elif curPos[0] > cRight and currentDirection != Direction.RIGHT: 
           print('Right')
           currentDirection = Direction.RIGHT
-        elif not(curPos[1] < cTop or curPos[1] > cBottom or curPos[0] < cLeft or curPos[0] > cRight):
+        elif not (curPos[1] < cTop or curPos[1] > cBottom or curPos[0] < cLeft or curPos[0] > cRight):
           #no direction condition is passed
           currentDirection = Direction.NEUTRAL
         
